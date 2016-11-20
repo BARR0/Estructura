@@ -1,3 +1,5 @@
+package Tables;
+
 import java.util.Iterator;
 
 public interface DictionaryInterface<Key, Value>{

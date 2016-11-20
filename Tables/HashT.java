@@ -1,10 +1,11 @@
-import java.util.ArrayList;
+package Tables;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 
-public class Dict<K, V> {
+public class HashT<K, V> {
     private final static float DEFAULT_CHARGE = 0.75f;
     private final static int DEFAULT_SIZE = 131;
     private int m, //tamaño
@@ -14,18 +15,18 @@ public class Dict<K, V> {
     private Node<K, V>[] table;
 
     @SuppressWarnings("unchecked")
-    public Dict(int size, float charge){
+    public HashT(int size, float charge){
         this.charge = charge;
         this.max = (int) (size * charge);
         this.m = size;
         this.n = 0;
         this.table = (Node<K, V>[])new Node[size];
     }
-    public Dict(){
+    public HashT(){
         this(DEFAULT_SIZE, DEFAULT_CHARGE);
     }
     public int hash(K key){
-        return (key.hashCode() & 0x7FFFFFF) % this.m;
+        return (key.hashCode() & (~0 >>> 1)) % this.m;
     }
     public int size(){
         return this.n;
@@ -38,16 +39,7 @@ public class Dict<K, V> {
         int pos = this.hash(key);
         for(Node<K, V> x = this.table[pos]; x != null; x = x.next){
             if(key.equals(x.key))
-                return x.defs.value;
-        }
-        return null;
-    }
-    public ArrayList<V> getAll(K key){
-        if(key == null) throw new NullPointerException("null argument");
-        int pos = this.hash(key);
-        for(Node<K, V> x = this.table[pos]; x != null; x = x.next){
-            if(key.equals(x.key))
-                return this.getDefs(x.defs);
+                return x.value;
         }
         return null;
     }
@@ -61,9 +53,7 @@ public class Dict<K, V> {
         Node<K, V> x;
         for(x = this.table[pos]; x != null; x = x.next){
             if(key.equals(x.key)){
-                Def<V> tmp = new Def<>(value);
-                tmp.next = x.defs;
-                x.defs = tmp;
+                x.value = value;
                 return;
             }
         }
@@ -74,19 +64,19 @@ public class Dict<K, V> {
         if(key == null) throw new NullPointerException("null argument");
         int pos = this.hash(key);
         Node<K, V> x = this.table[pos];
-        Def<V> tmp;
+        V tmp;
         if(x != null && x.key.equals(key)){
-            tmp = x.defs;
+            tmp = x.value;
             this.table[pos] = x.next;
             --this.n;
-            return tmp.value;
+            return tmp;
         }
         for(; x != null; x = x.next){
             if(x.next != null && x.next.key.equals(key)){
-                tmp = x.next.defs;
+                tmp = x.next.value;
                 x.next = x.next.next;
                 --this.n;
-                return tmp.value;
+                return tmp;
             }
         }
         return null;
@@ -103,7 +93,7 @@ public class Dict<K, V> {
     public Iterator<K> keyItr(){
         return new KeyIterator();
     }
-    public Iterator<ArrayList<V>> valueItr(){
+    public Iterator<V> valueItr(){
         return new ValueIterator();
     }
     @SuppressWarnings("unchecked")
@@ -115,13 +105,9 @@ public class Dict<K, V> {
         this.table = (Node<K, V>[])new Node[this.m];
         int i = 0;
         Node<K, V> tmp = oldTable[i];
-        ArrayList<V> list;
         while(i < oldTable.length){
             if(tmp != null){
-                list = this.getDefs(tmp.defs);
-                for(V val : list){
-                    this.put(tmp.key, val);
-                }
+                this.put(tmp.key, tmp.value);
                 tmp = tmp.next;
             }
             else if(++i < oldTable.length){
@@ -129,91 +115,70 @@ public class Dict<K, V> {
             }
         }
     }
-    private ArrayList<V> getDefs(Def<V> defs){
-        Def<V> tmp = defs;
-        ArrayList<V> list = new ArrayList<>();
-        while(tmp != null){
-            list.add(tmp.value);
-            tmp = tmp.next;
-        }
-        return list;
-    }
 
     private abstract class HashIterator<E> implements Iterator<E>{
         Node <K, V> next;
         int index;
 
         public HashIterator(){
-            for(this.index = 0; this.index < Dict.this.m; ++this.index){
-                if(Dict.this.table[this.index] != null){
-                    this.next = Dict.this.table[this.index];
+            for(this.index = 0; this.index < HashT.this.m; ++this.index){
+                if(HashT.this.table[this.index] != null){
+                    this.next = HashT.this.table[this.index];
                     break;
                 }
             }
         }
         public boolean hasNext(){
-            return this.next != null;
+            return next != null;
         }
         public Node <K, V> nextNode(){
-            if(this.next == null) throw new NoSuchElementException("hola prro");
+            if(this.next == null) throw new NoSuchElementException();
             Node<K, V> tmp = this.next;
             if((this.next = this.next.next) == null){
-                for(++this.index; this.index < Dict.this.m && this.next == null; ++this.index){
-                    this.next = Dict.this.table[this.index];
+                for(++this.index; this.index < HashT.this.m && this.next == null; ++this.index){
+                    this.next = HashT.this.table[this.index];
                 }
                 --this.index;
             }
             return tmp;
         }
     }
-    public class ValueIterator extends HashIterator<ArrayList<V>>{
-        public ArrayList<V> next() {
-            return Dict.this.getDefs(this.nextNode().defs);
+    public class ValueIterator extends HashIterator<V>{
+        public V next() {
+            return this.nextNode().value;
         }
-        public void remove(){}
     }
     public class KeyIterator extends HashIterator<K>{
         public K next() {
             return this.nextNode().key;
         }
-        public void remove(){}
     }
-    private static class Def<V>{
-        public V value;
-        public Def<V> next;
 
-        public Def(V val){
-            this.value = val;
-        }
-    }
     private static class Node<K, V>{
         public K key;
-        public Def<V> defs;
+        public V value;
         public Node<K, V> next;
 
         public Node(K key, V value, Node<K, V> next){
             this.key = key;
-            this.defs = new Def<V>(value);
+            this.value = value;
             this.next = next;
         }
     }
 /*
     public static void main(String[] args) {
-        Dict<String, String> t = new Dict<>();
+        HashT<String, String> t = new HashT<>();
         t.put("1", "hola");
         t.put("2", "bye");
         t.put("no", "si");
-        t.put("1", "hola2");
-        t.put("1", "ola prro");
         //t.remove("1");
         Iterator<String> itr = t.keyItr();
         while(itr.hasNext()){
             System.out.println(itr.next());
         }
-        System.out.println("----------");
-        Iterator<ArrayList<String>>itr2 = t.valueItr();
-        while(itr2.hasNext()){
-            System.out.println(itr2.next());
+        itr = t.valueItr();
+        while(itr.hasNext()){
+            System.out.println(itr.next());
         }
     }
 */
