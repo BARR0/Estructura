@@ -11,5 +11,5 @@ public interface DictionaryInterface<Key, Value>{
     public Iterator<Value> getValueIterator();
     public boolean isEmpty();
     public int getSize ();
-    public void clear ( ) ;
+    public void clear();
 }
