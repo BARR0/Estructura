@@ -39,11 +39,22 @@ public class DataBase {
 			return (int) (this.invoice - node.invoice);
 		}
 	}
-    
 
+    public void removeLastExpense(String name, Long invoice){
+
+    }
+
+    public void removeInvoice(String name, Long invoice){
+        Table2.getValue(name).remove(/*---->*/new InvoiceNode(invoice,0)/*<----*/);//Esto essta asqueroso
+        Table3.remove(invoice);
+    }
+
+    public void removeUser(String name){
+        Table1.remove(name);
+        Table2.remove(name);
+        //Remover cada invpoice de la tabla3 que pertenezca a este name
+    }
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 }
