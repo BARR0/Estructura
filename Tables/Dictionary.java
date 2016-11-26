@@ -12,7 +12,8 @@ public class Dictionary{
     }
     public void add(long number, String item, double expense){
         if(!table.contains(number)){
-            table.add(number, new Touple(item, expense));
+            table.add(number, new Touple(null, 0.0));
+            this.add(number, item, expense);
         }
         else{
             Touple tmp = table.getValue(number);
@@ -40,6 +41,8 @@ public class Dictionary{
     private Touple getTouple(long number, String item){
         if(item == null) throw new NoSuchElementException("Parameters can't be null.");
         Touple tmp = table.getValue(number);
+        if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
+        tmp = tmp.next;
         while(tmp != null){
             if(item.equals(tmp.item))
                 return tmp;
@@ -55,6 +58,8 @@ public class Dictionary{
     public List<String> getItems(long number){
         List<String> items = new ArrayList<>();
         Touple tmp = table.getValue(number);
+        if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
+        tmp = tmp.next;
         while(tmp != null){
             items.add(tmp.item);
             tmp = tmp.next;
@@ -64,6 +69,8 @@ public class Dictionary{
     public List<Double> getExpenses(long number){
         List<Double> items = new ArrayList<>();
         Touple tmp = table.getValue(number);
+        if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
+        tmp = tmp.next;
         while(tmp != null){
             items.add(tmp.expense);
             tmp = tmp.next;
@@ -88,8 +95,10 @@ public class Dictionary{
         pdb.add(2, "x2.0", 2.0);
         pdb.add(1, "x1.1", 1.1);
         pdb.add(1, "x1.2", 1.2);
+        //pdb.remove(1);
         System.out.println();
-        System.out.println(pdb.getExpense(1, "x1.1"));
+        System.out.println(pdb.getExpenses(1));
+        System.out.println(pdb.getItems(2));
     }
     */
 }
