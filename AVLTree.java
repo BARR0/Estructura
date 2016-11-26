@@ -1,14 +1,43 @@
-package FinalProject;
+import java.util.NoSuchElementException;
 
 public class AVLTree<E extends Comparable<E>> {
 
 	Node root;
 	private static final int ALLOWED_IMBALANCE = 1;
-	
+
 	public AVLTree(){
 		this.root = null;
 	}
-	
+
+    public E get(E key) {
+        if(this.root == null) throw new NoSuchElementException();
+        Node tmp = this.root;
+        int r = 0;
+        while(tmp != null){
+            r = key.compareTo(tmp.element);
+            if(r == 0){
+                return tmp.element;
+            }
+            else if(r < 0){
+                tmp = tmp.left;
+            }
+            else{
+                tmp = tmp.right;
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
+    public boolean contains(E key) {
+        try{
+            this.get(key);
+            return true;
+        }
+        catch(NoSuchElementException e){
+            return false;
+        }
+    }
+
 	public void insert(E element){
 		if(this.root == null){
 			this.root = new Node(element, null,null);
@@ -16,7 +45,7 @@ public class AVLTree<E extends Comparable<E>> {
 			this.root = insert(element,this.root);
 		}
 	}
-	
+
 	private Node insert(E element, Node n){
 		if(n == null) return new Node(element, null,null);
 		int cmp = element.compareTo(n.element);
@@ -27,18 +56,18 @@ public class AVLTree<E extends Comparable<E>> {
 		}
 		return balance(n);
 	}
-	
+
 	public Node remove(E element){
-		return element != null? remove(element, this.root) : null; 
+		return element != null? remove(element, this.root) : null;
 	}
-	
+
 	private Node remove(E element, Node node){
 		if(node == null){
 			return node; //item not found
 		}
-		
+
 		int comparable = element.compareTo(node.element);
-		
+
 		if(comparable < 0){
 			node.left = remove(element, node.left);
 		}else if(comparable > 0){
@@ -51,14 +80,14 @@ public class AVLTree<E extends Comparable<E>> {
 		}
 		return balance(node);
 	}
-	
+
 	private Node findMin(Node node){
 		if(node.left == null){
 			return node;
 		}
 		return findMin(node.left);
 	}
-	
+
 	private Node balance(Node n){
 		if (n == null) return n;
 		if(height(n.left) - height(n.right) > ALLOWED_IMBALANCE){
@@ -79,7 +108,7 @@ public class AVLTree<E extends Comparable<E>> {
 		n.height = Math.max(height(n.left), height(n.right))+1;
 		return n;
 	}
-	
+
 	private Node rotateWithLeftChild(Node a){
 		Node b = a.left;
 		a.left = b.right;
@@ -88,7 +117,7 @@ public class AVLTree<E extends Comparable<E>> {
 		b.height = Math.max(height(b.left), height(b.right))+1;
 		return b;
 	}
-	
+
 	private Node rotateWithRightChild(Node a){
 		Node b = a.right;
 		a.right = b.left;
@@ -97,21 +126,21 @@ public class AVLTree<E extends Comparable<E>> {
 		b.height = Math.max(height(b.left), height(b.right))+1;
 		return b;
 	}
-	
+
 	private Node doubleWithLeftChild(Node x){
 		x.left = rotateWithRightChild(x.left);
 		return rotateWithLeftChild(x);
 	}
-	
+
 	private Node doubleWithRightChild(Node x){
 		x.right = rotateWithLeftChild(x.right);
 		return rotateWithRightChild(x);
 	}
-	
+
 	private int height(Node n){
 		return n == null?0:n.height;
 	}
-	
+
 	public String toString(){
 		if(this.root != null){
 			return inOrder(this.root);
@@ -119,7 +148,7 @@ public class AVLTree<E extends Comparable<E>> {
 			return "";
 		}
 	}
-	
+
 	private String inOrder(Node node){
 		String string = "";
 		if(node.left != null){
@@ -131,22 +160,22 @@ public class AVLTree<E extends Comparable<E>> {
 		}
 		return string;
 	}
-	
+
 	private class Node{
 		E element;
 		Node right, left;
 		int height;
-		
+
 		public Node(E element, Node right, Node left){
 			this.element = element;
 			this.right = right;
 			this.left = left;
 			this.height = Math.max(
-					right == null?1:right.height+1, 
+					right == null?1:right.height+1,
 					left == null?1:left.height+1
 			);
 		}
-		
+
 		public String toString(){
 			return "["+this.element.toString()+"]";
 		}

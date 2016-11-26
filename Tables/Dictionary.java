@@ -54,7 +54,7 @@ public class Dictionary{
     public double getExpense(long number, String item){
         return this.getTouple(number, item).expense;
     }
-    
+
     public List<String> getItems(long number){
         List<String> items = new ArrayList<>();
         Touple tmp = table.getValue(number);
