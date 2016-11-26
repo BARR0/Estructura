@@ -81,13 +81,15 @@ public class Dictionary{
             this.expense = expense;
         }
     }
-
+    /*
     public static void main(String[] args) {
         Dictionary pdb = new Dictionary();
         pdb.add(1, "x1.0", 1.0);
         pdb.add(2, "x2.0", 2.0);
         pdb.add(1, "x1.1", 1.1);
-        pdb.add(2, "x1.2", 1.2);
-        
+        pdb.add(1, "x1.2", 1.2);
+        System.out.println();
+        System.out.println(pdb.getExpense(1, "x1.1"));
     }
+    */
 }
