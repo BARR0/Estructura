@@ -77,6 +77,9 @@ public class Dictionary{
         }
         return items;
     }
+    public String toString(){
+        return this.table.toString();
+    }
 
     private static class Touple{
         public String item;
