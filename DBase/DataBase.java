@@ -1,7 +1,12 @@
 package DBase;
 
-import AVL.*;
-import Tables.*;
+import AVL.AVLTree;
+import Tables.DictionaryInterface;
+import Tables.Dictionary;
+import Tables.HashTableOpenAddressing;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class DataBase {
     DictionaryInterface<String, String> Table1;
@@ -45,9 +50,32 @@ public class DataBase {
     }
 
     public String toString(){
-        return this.Table1.toString() + "\n" +
+        StringBuilder sb = new StringBuilder();
+        Iterator<String> itrName = this.Table1.getKeyIterator();
+        Iterator<InvoiceNode> itrInvoice;
+        Iterator<String> items;
+        Iterator<Double> expenses;
+        String name;
+        InvoiceNode invoiceN;
+        while(itrName.hasNext()){
+            name = itrName.next();
+            sb.append(name + ": " + this.Table1.getValue(name) + "\n");
+            itrInvoice = this.Table2.getValue(name).getItr();
+            while(itrInvoice.hasNext()){
+                invoiceN = itrInvoice.next();
+                sb.append("\t" + invoiceN.invoice + " : $" + invoiceN.expenses + "\n");
+                items = this.Table3.getItemsItr(invoiceN.invoice);
+                expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+                while(items.hasNext() && expenses.hasNext()){
+                    sb.append("\t\t" + items.next() + " : $" + expenses.next() + "\n");
+                }
+            }
+        }
+        return sb.toString();
+        /*return this.Table1.toString() + "\n" +
             this.Table2.toString() + "\n" +
             this.Table3.toString();
+        */
     }
 
     private class InvoiceNode implements Comparable<InvoiceNode>{
@@ -70,6 +98,9 @@ public class DataBase {
         db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
+        db.newUser("Miguel", "su casa");
+        db.newInvoice("Miguel", 1234l);
+        db.newExpense("Miguel", 1234l, "asd", 45.5);
         System.out.println(db);
     }
 }

@@ -1,7 +1,7 @@
 package Tables;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class Dictionary{
@@ -12,7 +12,7 @@ public class Dictionary{
     }
     public void add(long number, String item, double expense){
         if(!table.contains(number)){
-            table.add(number, new Touple(null, 0.0));
+            table.add(number, new Touple(null, -1.0));
             this.add(number, item, expense);
         }
         else{
@@ -38,7 +38,7 @@ public class Dictionary{
         table.clear();
     }
 
-    private Touple getTouple(long number, String item){
+    /*private Touple getTouple(long number, String item){
         if(item == null) throw new NoSuchElementException("Parameters can't be null.");
         Touple tmp = table.getValue(number);
         if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
@@ -49,14 +49,23 @@ public class Dictionary{
             tmp = tmp.next;
         }
         throw new NoSuchElementException("Item or number not found.");
-    }
+    }*/
 
     public double getExpense(long number, String item){
-        return this.getTouple(number, item).expense;
+        if(item == null) throw new NoSuchElementException("Parameters can't be null.");
+        Touple tmp = table.getValue(number);
+        if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
+        tmp = tmp.next;
+        while(tmp != null){
+            if(item.equals(tmp.item))
+                return tmp.expense;
+            tmp = tmp.next;
+        }
+        throw new NoSuchElementException("Item or number not found.");
     }
 
-    public List<String> getItems(long number){
-        List<String> items = new ArrayList<>();
+    public Iterator<String> getItemsItr(long number){
+        /*ArrayList<String> items = new ArrayList<>();
         Touple tmp = table.getValue(number);
         if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
         tmp = tmp.next;
@@ -64,18 +73,13 @@ public class Dictionary{
             items.add(tmp.item);
             tmp = tmp.next;
         }
-        return items;
+        return items;*/
+        if(!this.contains(number)) throw new NoSuchElementException("Ivoice not found.");
+        return new itemsItr(number);
     }
-    public List<Double> getExpenses(long number){
-        List<Double> items = new ArrayList<>();
-        Touple tmp = table.getValue(number);
-        if(tmp == null) throw new NoSuchElementException("Ivoice not found.");
-        tmp = tmp.next;
-        while(tmp != null){
-            items.add(tmp.expense);
-            tmp = tmp.next;
-        }
-        return items;
+    public Iterator<Double> getExpensesItr(long number){
+        if(!this.contains(number)) throw new NoSuchElementException("Ivoice not found.");
+        return new expensesItr(number);
     }
     public String toString(){
         return this.table.toString();
@@ -90,7 +94,76 @@ public class Dictionary{
             this.item = item;
             this.expense = expense;
         }
+        public String toString(){
+            return this.item + "$" + this.expense + ", " + (this.next != null? this.next.toString():"");
+        }
     }
+
+    private class itemsItr implements Iterator<String>{
+        Touple current;
+
+        public itemsItr(long number){
+            this.current = Dictionary.this.table.getValue(number);
+        }
+        public boolean hasNext(){
+            return this.current.next != null;
+        }
+        public String next(){
+            this.current = this.current.next;
+            return this.current.item;
+        }
+    }
+
+    private class expensesItr implements Iterator<Double>{
+        Touple current;
+
+        public expensesItr(long number){
+            this.current = Dictionary.this.table.getValue(number);
+        }
+        public boolean hasNext(){
+            return this.current.next != null;
+        }
+        public Double next(){
+            this.current = this.current.next;
+            return this.current.expense;
+        }
+    }
+
+    /*
+    private abstract class Itr<E> implements Iterator<E>{
+        Iterator<Touple> itr;
+        Touple current;
+
+        public Itr(){
+            this.itr = Dictionary.this.table.getValueIterator();
+            if(this.itr.hasNext()){
+                this.current = this.itr.next().next;
+            }
+        }
+        public boolean hasNext(){
+            return this.current.next != null || this.itr.hasNext();
+        }
+        public Touple nextTouple(){
+            if(this.current.next != null){
+                this.current = this.current.next;
+            }
+            else{
+                this.current = this.itr.next().next;
+            }
+            return this.current;
+        }
+    }
+    private class itemItr extends Itr<String>{
+        public String next(){
+            return this.nextTouple().item;
+        }
+    }
+    private class expenseItr extends Itr<Double>{
+        public Double next(){
+            return this.nextTouple().expense;
+        }
+    }
+    */
     /*
     public static void main(String[] args) {
         Dictionary pdb = new Dictionary();

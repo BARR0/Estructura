@@ -1,6 +1,10 @@
 package AVL;
 
+import Queues.Queue;
+import Queues.MyQueue;
+
 import java.util.NoSuchElementException;
+import java.util.Iterator;
 
 public class AVLTree<E extends Comparable<E>> {
 
@@ -178,8 +182,38 @@ public class AVLTree<E extends Comparable<E>> {
 			);
 		}
 
-		public String toString(){
+	public String toString(){
 			return "["+this.element.toString()+"]";
+		}
+	}
+
+	public Iterator<E> getItr(){
+		return new TreeItr();
+	}
+
+	private class TreeItr implements Iterator<E>{
+		private Queue<E> q;
+
+		public TreeItr(){
+			q = new MyQueue<E>();
+			if(AVLTree.this.root != null){
+				this.fillQueue(AVLTree.this.root);
+			}
+		}
+
+		private void fillQueue(Node n){
+			if(n == null) return;
+			this.fillQueue(n.left);
+			this.q.enqueue(n.element);
+			this.fillQueue(n.right);
+		}
+
+		public boolean hasNext(){
+			return !this.q.isEmpty();
+		}
+
+		public E next(){
+			return this.q.dequeue();
 		}
 	}
 	public static void main(String[] args) {
