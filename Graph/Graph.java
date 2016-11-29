@@ -37,7 +37,7 @@ public class Graph {
     }
     
     public boolean contains(String vertex){
-    	return this.getVertex(vertex) != null;
+    	return this.vertices.containsKey(vertex);
     }
     
     public boolean isAdjacent(String vertex1, String vertex2){
@@ -67,7 +67,7 @@ public class Graph {
 			if(e.end == vertex2){
 				double cost = e.cost;
 				adjVertex1.remove(e);
-				return cost;
+				return cost;	
 			}
 		}
 		return -1.0;
@@ -83,9 +83,9 @@ public class Graph {
     public void removeVertexUndirected(String vertex){
     	Vertex Vertex1 = this.getVertex(vertex);
     	for(Edge e : Vertex1.adjacency){
-    		this.removeEdge(Vertex1, e.end);
     		this.removeEdge(e.end, Vertex1);
     	}
+    	this.vertices.remove(vertex);
     }
     
     public String breadthFirst(String origin){

@@ -10,10 +10,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class DataBase {
-    DictionaryInterface<String, String> Table1;
-    DictionaryInterface<String, AVLTree<InvoiceNode>> Table2;
-    Dictionary Table3;
-    Graph Table4;
+    private DictionaryInterface<String, String> Table1;
+    private DictionaryInterface<String, AVLTree<InvoiceNode>> Table2;
+    private Dictionary Table3;
+    public Graph Table4;
 
     public DataBase(){
         Table1 = new HashTableOpenAddressing<String,String>();
@@ -32,7 +32,7 @@ public class DataBase {
     }
 
     public void newExpense(String name, long invoice, String item, double expense){
-        Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses += expense; //TODO hacerlo bonito
+        Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses += expense;
         Table3.add(invoice, item, expense);
         Table4.removeVertexUndirected(name);
     }
@@ -43,14 +43,18 @@ public class DataBase {
     }
 
     public void removeInvoice(String name, long invoice){
-        Table2.getValue(name).remove(/*---->*/new InvoiceNode(invoice,0)/*<----*/);//Esto essta asqueroso
+        Table2.getValue(name).remove(new InvoiceNode(invoice, 0));
         Table3.remove(invoice);
     }
 
     public void removeUser(String name){
-        Table1.remove(name);
+    	Table1.remove(name);
+		Iterator<InvoiceNode> itr = this.Table2.getValue(name).getItr();
+        while(itr.hasNext()){
+            this.Table3.remove(itr.next().invoice);
+        }
         Table2.remove(name);
-        //Remover cada invpoice de la tabla3 que pertenezca a este name
+        Table4.removeVertexUndirected(name);
     }
 
     //Returns the abosulte difference of the expenses of two users
@@ -58,6 +62,7 @@ public class DataBase {
     public double compareUsers(String user1Name, String user2Name){
     	if(this.Table1.contains(user1Name) && this.Table1.contains(user2Name)){
             if(this.Table4.isAdjacent(user1Name, user2Name)){
+            	System.out.println("Sacado del grafo");
             	return this.Table4.getCost(user1Name, user2Name);
             }
 
@@ -69,6 +74,7 @@ public class DataBase {
 
     		//Now we add that relation in the graph, the expense difference is the weight
     		this.Table4.addEdgeUndirected(user1Name, user2Name, expensesDifference);
+    		System.out.println("Recalculado");
             return expensesDifference;
     	}
         throw new NoSuchElementException("One of the users wasn't found.");
@@ -143,7 +149,7 @@ public class DataBase {
 
     public static void main(String[] args) {
         DataBase db = new DataBase();
-        db.newUser("Andres", "mi casa");
+        /*db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
         
@@ -164,6 +170,25 @@ public class DataBase {
         
         db.removeLastExpense("Jose", 431l);
         
+        System.out.println(db);
+        System.out.println("--------------------");*/
+        db.newUser("Carlos", "Armonía");
+        db.newInvoice("Carlos", 1);
+        db.newExpense("Carlos", 1, "juego de steam", 50);
+        
+        db.newUser("Estefy", "Colima");
+        db.newInvoice("Estefy", 2);
+        db.newExpense("Estefy", 2, "celular", 100);
+        
+        System.out.println(db);
+        System.out.println(db.compareUsers("Carlos", "Estefy"));
+        System.out.println(db.compareUsers("Carlos", "Estefy"));
+        
+        db.removeUser("Estefy");
+        System.out.println(db.Table4.breadthFirst("Carlos"));
+        System.out.println(db);
+        System.out.println(db.compareUsers("Carlos", "Estefy"));
+        System.out.println(db.Table4.breadthFirst("Carlos"));
         System.out.println(db);
     }
 }

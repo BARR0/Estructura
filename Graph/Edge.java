@@ -8,4 +8,9 @@ public class Edge {
         this.end = v;
         this.cost = c;
     }
+    
+    public boolean equals(Object o){
+    	System.out.println("SIIIIIIII");
+    	return this == o;
+    }
 }

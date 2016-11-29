@@ -98,8 +98,7 @@ public class HashTableOpenAddressing<Key, Value> implements DictionaryInterface<
         while(!k.equals(this.table[pos].key)){
             //System.out.println("hi");
             pos = (pos + 1)%this.m;
-            if(this.table[pos] == null || pos == hash)
-                return false;
+            if(this.table[pos] == null || pos == hash) return false;
         }
         return true;
     }
