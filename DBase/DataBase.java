@@ -4,20 +4,25 @@ import AVL.AVLTree;
 import Tables.DictionaryInterface;
 import Tables.Dictionary;
 import Tables.HashTableOpenAddressing;
+import Graph.Graph;
+import Graph.Edge;
+import Graph.Vertex;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class DataBase {
     DictionaryInterface<String, String> Table1;
     DictionaryInterface<String, AVLTree<InvoiceNode>> Table2;
     Dictionary Table3;
-    //Tabla4;
+    Graph Table4;
 
     public DataBase(){
         Table1 = new HashTableOpenAddressing<String,String>();
         Table2 = new HashTableOpenAddressing<String, AVLTree<InvoiceNode>>();
         Table3 = new Dictionary();
+        Table4 = new Graph();
     }
 
     public void newUser(String name, String address){
@@ -47,6 +52,58 @@ public class DataBase {
         Table1.remove(name);
         Table2.remove(name);
         //Remover cada invpoice de la tabla3 que pertenezca a este name
+    }
+
+    //Returns the abosulte difference of the expenses of two users
+
+    public double compareUsers(String user1Name, String user2Name){
+    	if(this.Table1.contains(user1Name) && this.Table1.contains(user2Name)){
+            //if(this.Table4.isAdjacent(user1Name, user2Name)){}
+
+    		//Here we calulate the difference between the users' expenses in absolute value
+    		double expensesDifference = this.getTotalExpenses(user1Name) - this.getTotalExpenses(user2Name);
+    		if(expensesDifference < 0){
+    			expensesDifference *= -1.0;
+    		}
+
+    		//Now we add that relation in the graph, the expense difference is the weight
+    		this.Table4.addEdgeUndirected(user1Name, user2Name, expensesDifference);
+    		this.Table4.addEdgeUndirected(user2Name, user1Name, expensesDifference);
+            return expensesDifference;
+    	}
+        throw new NoSuchElementException("One of the users wasn't found.");
+    }
+
+    //Se llama cada vez que se agrega o se borra un expens
+    private void refreshExpenses(String user1Name, String user2Name){
+    	//---falta completarlo
+    }
+
+    //Agregar una forma de calcular todos los expenses de un usario
+    public double getTotalExpenses(String userName){
+    	//Aun no se si esto funciona
+    	if(this.Table2.contains(userName)){
+    		Iterator<InvoiceNode> itr = this.Table2.getValue(userName).getItr();
+            double total = 0.0;
+            while(itr.hasNext()){
+                total += itr.next().expenses;
+            }
+            return total;
+    	}
+    	return 0;
+    }
+
+    //Calcula cuanto cuesta el total de items en el invoice
+    public double getInvoicePayments(long invoice){
+    	double payments = 0;
+    	if(this.Table3.contains(invoice)){
+
+    		Iterator<Double> expenses = this.Table3.getExpensesItr(invoice);
+        	while(expenses.hasNext()){
+        		payments += expenses.next();
+        	}
+    	}
+    	return payments;
     }
 
     public String toString(){

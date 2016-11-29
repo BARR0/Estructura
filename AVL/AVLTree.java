@@ -182,7 +182,7 @@ public class AVLTree<E extends Comparable<E>> {
 			);
 		}
 
-	public String toString(){
+	    public String toString(){
 			return "["+this.element.toString()+"]";
 		}
 	}
