@@ -2,7 +2,9 @@ package Graph;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 public class Graph {
@@ -30,6 +32,23 @@ public class Graph {
             v.restart();
         }
     }
+    
+    public boolean contains(String vertex){
+    	return this.getVertex(vertex) != null;
+    }
+    
+    public boolean isAdjacent(String vertex1, String vertex2){
+    	if(this.contains(vertex1) && this.contains(vertex2)){
+    		for (Edge e : this.getVertex(vertex1).adjacency) {
+				if(e.end == this.getVertex(vertex2)){
+					return true;
+				}
+			}
+    		return false;
+    	}
+    	throw new NoSuchElementException("One of the vertex not found");
+    }
+    
     public String breadthFirst(String origin){
         StringBuilder st = new StringBuilder();
         st.append(origin + "\n");
