@@ -55,7 +55,9 @@ public class DataBase {
 
     public double compareUsers(String user1Name, String user2Name){
     	if(this.Table1.contains(user1Name) && this.Table1.contains(user2Name)){
-            //if(this.Table4.isAdjacent(user1Name, user2Name)){}
+            if(this.Table4.isAdjacent(user1Name, user2Name)){
+            	return this.Table4.getCost(user1Name, user2Name);
+            }
 
     		//Here we calulate the difference between the users' expenses in absolute value
     		double expensesDifference = this.getTotalExpenses(user1Name) - this.getTotalExpenses(user2Name);
@@ -65,7 +67,6 @@ public class DataBase {
 
     		//Now we add that relation in the graph, the expense difference is the weight
     		this.Table4.addEdgeUndirected(user1Name, user2Name, expensesDifference);
-    		this.Table4.addEdgeUndirected(user2Name, user1Name, expensesDifference);
             return expensesDifference;
     	}
         throw new NoSuchElementException("One of the users wasn't found.");

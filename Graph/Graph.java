@@ -15,6 +15,9 @@ public class Graph {
         this.vertices = new HashMap<>();
     }
     private Vertex getVertex(String name){
+    	if(name == null){
+    		throw new NullPointerException("Can´t create a null vertex");
+    	}
         if(this.vertices.containsKey(name)){
             return this.vertices.get(name);
         }
@@ -47,6 +50,15 @@ public class Graph {
     		return false;
     	}
     	throw new NoSuchElementException("One of the vertex not found");
+    }
+    
+    public double getCost(String vertex1, String vertex2){
+    	for (Edge e : this.getVertex(vertex1).adjacency) {
+			if(e.end == this.getVertex(vertex2)){
+				return e.cost;
+			}
+		}
+    	return -1.0;
     }
     
     public String breadthFirst(String origin){
