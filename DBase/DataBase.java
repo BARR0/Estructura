@@ -5,11 +5,8 @@ import Tables.DictionaryInterface;
 import Tables.Dictionary;
 import Tables.HashTableOpenAddressing;
 import Graph.Graph;
-import Graph.Edge;
-import Graph.Vertex;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 public class DataBase {
