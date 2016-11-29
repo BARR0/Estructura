@@ -126,10 +126,6 @@ public class DataBase {
             }
         }
         return sb.toString();
-        /*return this.Table1.toString() + "\n" +
-            this.Table2.toString() + "\n" +
-            this.Table3.toString();
-        */
     }
 
     private class InvoiceNode implements Comparable<InvoiceNode>{
@@ -152,9 +148,19 @@ public class DataBase {
         db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
+        
         db.newUser("Miguel", "su casa");
         db.newInvoice("Miguel", 1234l);
         db.newExpense("Miguel", 1234l, "asd", 45.5);
+        
+        db.newUser("Jose", "MiCasa2");
+        db.newInvoice("Jose", 431l);
+        db.newInvoice("Jose", 5632l);
+        db.newExpense("Jose", 431l, "Atún", 12.0);
+        db.newExpense("Jose", 431l, "Huevo", 60.0);
+        db.newExpense("Jose", 431l, "Coca", 23.0);
+        db.newExpense("Jose", 431l, "Gansito", 13.0);
+        db.newExpense("Jose", 5632l, "Overwatch", 1000.0 );
         System.out.println(db);
     }
 }
