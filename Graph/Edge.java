@@ -10,7 +10,6 @@ public class Edge {
     }
     
     public boolean equals(Object o){
-    	System.out.println("SIIIIIIII");
     	return this == o;
     }
 }

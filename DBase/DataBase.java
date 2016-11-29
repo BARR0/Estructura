@@ -13,7 +13,7 @@ public class DataBase {
     private DictionaryInterface<String, String> Table1;
     private DictionaryInterface<String, AVLTree<InvoiceNode>> Table2;
     private Dictionary Table3;
-    public Graph Table4;
+    private Graph Table4;
 
     public DataBase(){
         Table1 = new HashTableOpenAddressing<String,String>();
@@ -61,7 +61,7 @@ public class DataBase {
 
     public double compareUsers(String user1Name, String user2Name){
     	if(this.Table1.contains(user1Name) && this.Table1.contains(user2Name)){
-            if(this.Table4.isAdjacent(user1Name, user2Name)){
+            if(this.Table4.contains(user1Name) && this.Table4.contains(user2Name) && this.Table4.isAdjacent(user1Name, user2Name)){
             	System.out.println("Sacado del grafo");
             	return this.Table4.getCost(user1Name, user2Name);
             }
@@ -107,6 +107,13 @@ public class DataBase {
     	return payments;
     }
 
+    public String getRelations(String source){
+    	if(!Table1.contains(source)){
+    		return "";
+    	}
+    	return this.Table4.breadthFirst(source);
+    }
+    
     public String toString(){
         StringBuilder sb = new StringBuilder();
         Iterator<String> itrName = this.Table1.getKeyIterator();
@@ -149,7 +156,7 @@ public class DataBase {
 
     public static void main(String[] args) {
         DataBase db = new DataBase();
-        /*db.newUser("Andres", "mi casa");
+        db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
         
@@ -171,24 +178,13 @@ public class DataBase {
         db.removeLastExpense("Jose", 431l);
         
         System.out.println(db);
-        System.out.println("--------------------");*/
-        db.newUser("Carlos", "Armonía");
-        db.newInvoice("Carlos", 1);
-        db.newExpense("Carlos", 1, "juego de steam", 50);
-        
-        db.newUser("Estefy", "Colima");
-        db.newInvoice("Estefy", 2);
-        db.newExpense("Estefy", 2, "celular", 100);
-        
-        System.out.println(db);
-        System.out.println(db.compareUsers("Carlos", "Estefy"));
-        System.out.println(db.compareUsers("Carlos", "Estefy"));
-        
-        db.removeUser("Estefy");
-        System.out.println(db.Table4.breadthFirst("Carlos"));
-        System.out.println(db);
-        System.out.println(db.compareUsers("Carlos", "Estefy"));
-        System.out.println(db.Table4.breadthFirst("Carlos"));
-        System.out.println(db);
+        System.out.println("--------------------");
+        System.out.println(db.compareUsers("Jose", "Andres"));
+        System.out.println(db.compareUsers("Miguel", "Andres"));
+        System.out.println(db.compareUsers("Miguel", "Jose"));
+        System.out.println(db.getRelations("Jose"));
+        db.removeUser("Miguel");
+        System.out.println(db.getRelations("Miguel"));
+        System.out.println(db.compareUsers("Miguel", "Jose"));
     }
 }
