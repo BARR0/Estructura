@@ -61,6 +61,33 @@ public class Graph {
     	return -1.0;
     }
     
+    private double removeEdge(Vertex vertex1, Vertex vertex2){
+    	List<Edge> adjVertex1 = vertex1.adjacency;
+    	for (Edge e : adjVertex1) {
+			if(e.end == vertex2){
+				double cost = e.cost;
+				adjVertex1.remove(e);
+				return cost;
+			}
+		}
+		return -1.0;
+    }
+    
+    public void removeEdgeUndirected(String vertex1, String vertex2){
+    	Vertex Vertex1 = this.getVertex(vertex1);
+    	Vertex Vertex2 = this.getVertex(vertex2);
+    	this.removeEdge(Vertex1, Vertex2);
+    	this.removeEdge(Vertex2, Vertex1);
+    }
+    
+    public void removeVertexUndirected(String vertex){
+    	Vertex Vertex1 = this.getVertex(vertex);
+    	for(Edge e : Vertex1.adjacency){
+    		this.removeEdge(Vertex1, e.end);
+    		this.removeEdge(e.end, Vertex1);
+    	}
+    }
+    
     public String breadthFirst(String origin){
         StringBuilder st = new StringBuilder();
         st.append(origin + "\n");

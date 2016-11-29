@@ -34,10 +34,13 @@ public class DataBase {
     public void newExpense(String name, long invoice, String item, double expense){
         Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses += expense; //TODO hacerlo bonito
         Table3.add(invoice, item, expense);
+        Table4.removeVertexUndirected(name);
     }
 
     public void removeLastExpense(String name, long invoice){
-
+    	//Table3 removeLast();
+    	//Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses -= expense;
+    	Table4.removeVertexUndirected(name);
     }
 
     public void removeInvoice(String name, long invoice){
@@ -162,6 +165,8 @@ public class DataBase {
         db.newExpense("Jose", 431l, "Coca", 23.0);
         db.newExpense("Jose", 431l, "Gansito", 13.0);
         db.newExpense("Jose", 5632l, "Overwatch", 1000.0 );
+        
+        System.out.println(db.compareUsers("Andres", "Jose"));
         System.out.println(db);
     }
 }
