@@ -81,6 +81,12 @@ public class Dictionary{
         if(!this.contains(number)) throw new NoSuchElementException("Ivoice not found.");
         return new expensesItr(number);
     }
+    public double removeLast(long number){
+        Touple tmp = this.table.getValue(number);
+        double expense = tmp.next.expense;
+        tmp.next = tmp.next.next;
+        return expense;
+    }
     public String toString(){
         return this.table.toString();
     }
