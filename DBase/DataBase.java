@@ -38,8 +38,7 @@ public class DataBase {
     }
 
     public void removeLastExpense(String name, long invoice){
-    	//Table3 removeLast();
-    	//Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses -= expense;
+    	Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses -= Table3.removeLast(invoice);
     	Table4.removeVertexUndirected(name);
     }
 
@@ -73,11 +72,6 @@ public class DataBase {
             return expensesDifference;
     	}
         throw new NoSuchElementException("One of the users wasn't found.");
-    }
-
-    //Se llama cada vez que se agrega o se borra un expens
-    private void refreshExpenses(String user1Name, String user2Name){
-    	//---falta completarlo
     }
 
     //Agregar una forma de calcular todos los expenses de un usario
@@ -166,7 +160,10 @@ public class DataBase {
         db.newExpense("Jose", 431l, "Gansito", 13.0);
         db.newExpense("Jose", 5632l, "Overwatch", 1000.0 );
         
-        System.out.println(db.compareUsers("Andres", "Jose"));
+        System.out.println(db);
+        
+        db.removeLastExpense("Jose", 431l);
+        
         System.out.println(db);
     }
 }

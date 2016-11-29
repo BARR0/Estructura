@@ -1,6 +1,5 @@
 package Tables;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -82,9 +81,15 @@ public class Dictionary{
         return new expensesItr(number);
     }
     public double removeLast(long number){
+    	if(!this.contains(number)) throw new NoSuchElementException("Invoice does not exist");
         Touple tmp = this.table.getValue(number);
         double expense = tmp.next.expense;
         tmp.next = tmp.next.next;
+        
+        if(tmp.next == null){
+        	this.remove(number);
+        }
+        
         return expense;
     }
     public String toString(){
