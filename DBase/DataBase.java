@@ -141,10 +141,12 @@ public class DataBase {
         itrInvoice = this.Table2.getValue(name).getItr();
         while(itrInvoice.hasNext()){
             invoiceN = itrInvoice.next();
-            items = this.Table3.getItemsItr(invoiceN.invoice);
-            expenses = this.Table3.getExpensesItr(invoiceN.invoice);
-            while(items.hasNext() && expenses.hasNext()){
-                sb.append("\t" + items.next() + " : $" + expenses.next() + "\n");
+            if(this.Table3.contains(invoiceN.invoice)){
+                items = this.Table3.getItemsItr(invoiceN.invoice);
+                expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+                while(items.hasNext() && expenses.hasNext()){
+                    sb.append("\t" + items.next() + " : $" + expenses.next() + "\n");
+                }
             }
         }
         return sb.toString();
@@ -178,10 +180,12 @@ public class DataBase {
             while(itrInvoice.hasNext()){
                 invoiceN = itrInvoice.next();
                 sb.append("\t" + invoiceN.invoice + " : $" + invoiceN.expenses + "\n");
-                items = this.Table3.getItemsItr(invoiceN.invoice);
-                expenses = this.Table3.getExpensesItr(invoiceN.invoice);
-                while(items.hasNext() && expenses.hasNext()){
-                    sb.append("\t\t" + items.next() + " : $" + expenses.next() + "\n");
+                if(this.Table3.contains(invoiceN.invoice)){
+                    items = this.Table3.getItemsItr(invoiceN.invoice);
+                    expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+                    while(items.hasNext() && expenses.hasNext()){
+                        sb.append("\t\t" + items.next() + " : $" + expenses.next() + "\n");
+                    }
                 }
             }
         }

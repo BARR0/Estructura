@@ -77,7 +77,7 @@ public class Dictionary{
         return new itemsItr(number);
     }
     public Iterator<Double> getExpensesItr(long number){
-        if(!this.contains(number)) throw new NoSuchElementException("Ivoice not found.");
+        if(!this.contains(number)) throw new NoSuchElementException("Invoice not found.");
         return new expensesItr(number);
     }
     public double removeLast(long number){
@@ -85,11 +85,11 @@ public class Dictionary{
         Touple tmp = this.table.getValue(number);
         double expense = tmp.next.expense;
         tmp.next = tmp.next.next;
-        
+
         if(tmp.next == null){
         	this.remove(number);
         }
-        
+
         return expense;
     }
     public String toString(){

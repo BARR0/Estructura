@@ -1,5 +1,7 @@
 package DBase;
 
+import java.util.Scanner;
+
 public class UserInterface{
     private DataBase db;
     private long nextInvoice;
@@ -58,7 +60,78 @@ public class UserInterface{
             throw new IllegalArgumentException("Null parameters or a user doesn't exists.");
         return this.db.compareUsers(name1, name2);
     }
+    public String toString(){
+        return this.db.toString();
+    }
     public static void main(String[] args) {
-
+        final String menu =
+            "Type:\n"
+            + "\tadduser (name) (address)\n"
+            + "\taddinvoice (name)\n"
+            + "\taddexpense (name) (invoice) (item) (expense)\n"
+            + "\tremoveuser (name)\n"
+            + "\tremoveinvoice (name) (invoice)\n"
+            + "\tremovelastexpense (name) (invoice)\n"
+            + "\ttotalexpenses (name)\n"
+            + "\ttotalpayments (name)\n"
+            + "\ttotalearnings\n"
+            + "\tcompareusers (name1) (name2)\n"
+            + "\tprint\n"
+            + "\texit\n"
+        ;
+        Scanner sc = new Scanner(System.in);
+        String[] input = {"-1"};
+        UserInterface db = new UserInterface();
+        while(!input[0].equals("exit")){
+            System.out.println(menu);
+            input = sc.nextLine().split(" ");
+            System.out.println();
+            try{
+                switch(input[0]){
+                    case "adduser":
+                        db.addUser(input[1], input[2]);
+                        break;
+                    case "addinvoice":
+                        System.out.println("New invoice: " + db.addInvoice(input[1]));
+                        break;
+                    case "addexpense":
+                        db.addExpense(input[1], Long.parseLong(input[2]), input[3], Double.parseDouble(input[4]));
+                        break;
+                    case "removeuser":
+                        db.removeUser(input[1]);
+                        break;
+                    case "removeinvoice":
+                        db.removeInvoice(input[1], Long.parseLong(input[2]));
+                        break;
+                    case "removelastexpense":
+                        db.removeLastExpense(input[1], Long.parseLong(input[2]));
+                        break;
+                    case "totalexpenses":
+                        System.out.println(db.totalExpenses(input[1]));
+                        break;
+                    case "totalpayments":
+                        System.out.println(db.totalPayments(input[1]));
+                        break;
+                    case "totalearnings":
+                        System.out.println(db.totalEarnings());
+                        break;
+                    case "compareusers":
+                        System.out.println(db.compareUsers(input[1], input[2]));
+                        break;
+                    case "print":
+                        System.out.println(db);
+                        break;
+                    case "exit":
+                        break;
+                    default:
+                        System.out.println("Option not valid");
+                        break;
+                }
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+                System.out.println("Option not recognized.\n");
+            }
+        }
     }
 }
