@@ -183,7 +183,11 @@ public class DataBase {
     	return payments;
     }
     
-    //TODO
+    /**
+     * Calculates the total earnings of the DataBase.
+     * Iterates all the users in table of invoices and gets sums their total expenses.
+     * @return - double : The total earnings registered in the DataBase.
+     */
     public double totalEarnings(){
         double earnings = 0;
         Iterator<String> itrName = this.Table1.getKeyIterator();
@@ -193,7 +197,13 @@ public class DataBase {
         return earnings;
     }
     
-    //TODO
+    /**
+     * Collects all the items and costs in each invoice of the user.
+     * Iterates all the InvoiceNodes in the value of table of invoices with key(String:user).
+     * Iterates all the expenses in the value of table of expenses in each invoice.
+     * @param userName - String : Name of the already registered user.
+     * @return - String : List of all the items and costs of the given user.
+     */
     public String totalExpenses(String name){
         StringBuilder sb = new StringBuilder();
         Iterator<InvoiceNode> itrInvoice;
@@ -213,7 +223,12 @@ public class DataBase {
         return sb.toString();
     }
 
-    //TODO
+    /**
+     * Collects all the invoices and total payments of the user in a listed string.
+     * Iterates all the InvoiceNodes in the value of table of invoices with key(String:user).
+     * @param name - String : Name of the already registered user.
+     * @return - String : List of all the invoices and total payments for each node of the user.
+     */
     public String totalPayments(String name){
         StringBuilder sb = new StringBuilder();
         Iterator<InvoiceNode> itrInvoice;
