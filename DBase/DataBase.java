@@ -13,14 +13,14 @@ import java.util.NoSuchElementException;
  * Its purpose is to store users, invoices for each user and expenses for each income.
  * It has control of insertion and deletion of each table and can search for elements on each level by the primary ID.
  * @author JOSECARLOS
- * 
+ *
  */
 public class DataBase {
     private DictionaryInterface<String, String> Table1;
     private DictionaryInterface<String, AVLTree<InvoiceNode>> Table2;
     private Dictionary Table3;
     private Graph Table4;
-    
+
     /**
      * The constructor of the DataBase initializes the three tables and the graph.
      * All of the parameters use the default constructor, this means that each one of them initializes with 0 elements.
@@ -31,6 +31,7 @@ public class DataBase {
         Table3 = new Dictionary();
         Table4 = new Graph();
     }
+
     //falta TODO
     public boolean containsUser(String name){
         return this.Table1.contains(name);
@@ -44,13 +45,14 @@ public class DataBase {
      * Inserts a new element in table of addresses with key(String:name) and value (String:Address).
      * Inserts a new element in table of invoices with key(String:name) and value(new AVLTree).
      * @param name - String : Name of the new user.
-     * @param address - String : Address of the new user. 
+     * @param address - String : Address of the new user.
      */
+
     public void newUser(String name, String address){
         Table1.add(name, address);
         Table2.add(name, new AVLTree<InvoiceNode>());
     }
-    
+
     /**
      * Adds a new invoice for and already registered user.
      * Inserts a new invoice in table of invoices with key(String:name) and value(new InvoiceNode).
@@ -87,7 +89,7 @@ public class DataBase {
     	Table2.getValue(name).get(new InvoiceNode(invoice, 0)).expenses -= Table3.removeLast(invoice);
     	Table4.removeVertexUndirected(name);
     }
-    
+
     /**
      * Removes a selected invoice from a user.
      * Deletes an InvoiceNode from table of invoices with key(String:name) and value(long:invoice).
@@ -99,7 +101,7 @@ public class DataBase {
         Table2.getValue(name).remove(new InvoiceNode(invoice, 0));
         Table3.remove(invoice);
     }
-    
+
     /**
      * Removes an user from the DataBase.
      * Deletes a user from table of addresses with key(String:name).
@@ -164,7 +166,7 @@ public class DataBase {
     	}
     	return 0;
     }
-    
+
     /**
      * Calculates the total payments of an already existing invoice.
      * Iterates all the payments in the value of the table of expenses with key(long:invoice).
@@ -182,7 +184,7 @@ public class DataBase {
     	}
     	return payments;
     }
-    
+
     /**
      * Calculates the total earnings of the DataBase.
      * Iterates all the users in table of invoices and gets sums their total expenses.
@@ -196,7 +198,7 @@ public class DataBase {
         }
         return earnings;
     }
-    
+
     /**
      * Collects all the items and costs in each invoice of the user.
      * Iterates all the InvoiceNodes in the value of table of invoices with key(String:user).
@@ -204,24 +206,26 @@ public class DataBase {
      * @param userName - String : Name of the already registered user.
      * @return - String : List of all the items and costs of the given user.
      */
-    public String totalExpenses(String name){
-        StringBuilder sb = new StringBuilder();
-        Iterator<InvoiceNode> itrInvoice;
-        Iterator<String> items;
-        Iterator<Double> expenses;
-        InvoiceNode invoiceN;
-        sb.append(name + ": " + this.Table1.getValue(name) + "\n");
-        itrInvoice = this.Table2.getValue(name).getItr();
-        while(itrInvoice.hasNext()){
-            invoiceN = itrInvoice.next();
-            items = this.Table3.getItemsItr(invoiceN.invoice);
-            expenses = this.Table3.getExpensesItr(invoiceN.invoice);
-            while(items.hasNext() && expenses.hasNext()){
-                sb.append("\t" + items.next() + " : $" + expenses.next() + "\n");
-            }
-        }
-        return sb.toString();
-    }
+     public String totalExpenses(String name){
+         StringBuilder sb = new StringBuilder();
+         Iterator<InvoiceNode> itrInvoice;
+         Iterator<String> items;
+         Iterator<Double> expenses;
+         InvoiceNode invoiceN;
+         sb.append(name + ": " + this.Table1.getValue(name) + "\n");
+         itrInvoice = this.Table2.getValue(name).getItr();
+         while(itrInvoice.hasNext()){
+             invoiceN = itrInvoice.next();
+             if(this.Table3.contains(invoiceN.invoice)){
+                 items = this.Table3.getItemsItr(invoiceN.invoice);
+                 expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+                 while(items.hasNext() && expenses.hasNext()){
+                     sb.append("\t" + items.next() + " : $" + expenses.next() + "\n");
+                 }
+             }
+         }
+         return sb.toString();
+     }
 
     /**
      * Collects all the invoices and total payments of the user in a listed string.
@@ -240,7 +244,7 @@ public class DataBase {
             sb.append("\t" + invoiceN.invoice + " : $" + invoiceN.expenses + "\n");
         }
         return sb.toString();
-}
+    }
 
     /**
      * Looks for all the connected users with the given user.
@@ -253,11 +257,12 @@ public class DataBase {
     	}
     	return this.Table4.breadthFirst(source);
     }
-    
+
     /**
      * Looks for all values in each table and connects it in a leveled string.
      * @return - String : All the DataBase showed by levels.
      */
+
     public String toString(){
         StringBuilder sb = new StringBuilder();
         Iterator<String> itrName = this.Table1.getKeyIterator();
@@ -273,16 +278,18 @@ public class DataBase {
             while(itrInvoice.hasNext()){
                 invoiceN = itrInvoice.next();
                 sb.append("\t" + invoiceN.invoice + " : $" + invoiceN.expenses + "\n");
-                items = this.Table3.getItemsItr(invoiceN.invoice);
-                expenses = this.Table3.getExpensesItr(invoiceN.invoice);
-                while(items.hasNext() && expenses.hasNext()){
-                    sb.append("\t\t" + items.next() + " : $" + expenses.next() + "\n");
+                if(this.Table3.contains(invoiceN.invoice)){
+                    items = this.Table3.getItemsItr(invoiceN.invoice);
+                    expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+                    while(items.hasNext() && expenses.hasNext()){
+                        sb.append("\t\t" + items.next() + " : $" + expenses.next() + "\n");
+                    }
                 }
             }
         }
         return sb.toString();
     }
-    
+
     /**
      * InvoiceNode is used as a value for table of invoices.
      * Its purpose is to let the table of invoices store a root for an AVLTre so that it can store the connection of all the invoices related to that user.
@@ -309,24 +316,24 @@ public class DataBase {
         db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
-        
+
         db.newUser("Miguel", "su casa");
         db.newInvoice("Miguel", 1234l);
         db.newExpense("Miguel", 1234l, "asd", 45.5);
-        
+
         db.newUser("Jose", "MiCasa2");
         db.newInvoice("Jose", 431l);
         db.newInvoice("Jose", 5632l);
-        db.newExpense("Jose", 431l, "Atún", 12.0);
+        db.newExpense("Jose", 431l, "Atï¿½n", 12.0);
         db.newExpense("Jose", 431l, "Huevo", 60.0);
         db.newExpense("Jose", 431l, "Coca", 23.0);
         db.newExpense("Jose", 431l, "Gansito", 13.0);
         db.newExpense("Jose", 5632l, "Overwatch", 1000.0 );
-        
+
         System.out.println(db);
-        
+
         db.removeLastExpense("Jose", 431l);
-        
+
         System.out.println(db);
         System.out.println("--------------------");
         System.out.println(db.compareUsers("Jose", "Andres"));
