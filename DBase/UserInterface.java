@@ -50,8 +50,8 @@ public class UserInterface{
             throw new IllegalArgumentException("Null parameters or user doesn't exists.");
         return this.db.totalPayments(name);
     }
-    public double totalEarning(){
-        return this.db.totalEarning();
+    public double totalEarnings(){
+        return this.db.totalEarnings();
     }
     public double compareUsers(String name1, String name2){
         if(name1 == null || name2 == null || !this.db.containsUser(name1) || !this.db.containsUser(name2))
@@ -59,6 +59,6 @@ public class UserInterface{
         return this.db.compareUsers(name1, name2);
     }
     public static void main(String[] args) {
-        
+
     }
 }
