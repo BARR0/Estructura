@@ -22,6 +22,14 @@ public class DataBase {
         Table4 = new Graph();
     }
 
+    public boolean containsUser(String name){
+        return this.Table1.contains(name);
+    }
+
+    public boolean containsInvoice(String name, long invoice){
+        return this.Table1.contains(name) && Table2.getValue(name).contains(new InvoiceNode(invoice, 0));
+    }
+
     public void newUser(String name, String address){
         Table1.add(name, address);
         Table2.add(name, new AVLTree<InvoiceNode>());
@@ -113,7 +121,7 @@ public class DataBase {
     	}
     	return this.Table4.breadthFirst(source);
     }
-    
+
     public String toString(){
         StringBuilder sb = new StringBuilder();
         Iterator<String> itrName = this.Table1.getKeyIterator();
@@ -159,24 +167,24 @@ public class DataBase {
         db.newUser("Andres", "mi casa");
         db.newInvoice("Andres", 123l);
         db.newExpense("Andres", 123l, "asd", 45.5);
-        
+
         db.newUser("Miguel", "su casa");
         db.newInvoice("Miguel", 1234l);
         db.newExpense("Miguel", 1234l, "asd", 45.5);
-        
+
         db.newUser("Jose", "MiCasa2");
         db.newInvoice("Jose", 431l);
         db.newInvoice("Jose", 5632l);
-        db.newExpense("Jose", 431l, "Atún", 12.0);
+        db.newExpense("Jose", 431l, "Atï¿½n", 12.0);
         db.newExpense("Jose", 431l, "Huevo", 60.0);
         db.newExpense("Jose", 431l, "Coca", 23.0);
         db.newExpense("Jose", 431l, "Gansito", 13.0);
         db.newExpense("Jose", 5632l, "Overwatch", 1000.0 );
-        
+
         System.out.println(db);
-        
+
         db.removeLastExpense("Jose", 431l);
-        
+
         System.out.println(db);
         System.out.println("--------------------");
         System.out.println(db.compareUsers("Jose", "Andres"));
