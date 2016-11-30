@@ -31,7 +31,14 @@ public class DataBase {
         Table3 = new Dictionary();
         Table4 = new Graph();
     }
-    
+    //falta TODO
+    public boolean containsUser(String name){
+        return this.Table1.contains(name);
+    }
+    //falta TODO
+    public boolean containsInvoice(String name, long invoice){
+        return this.Table1.contains(name) && Table2.getValue(name).contains(new InvoiceNode(invoice, 0));
+    }
     /**
      * It adds a new user in the DataBase.
      * Inserts a new element in table of addresses with key(String:name) and value (String:Address).
@@ -175,6 +182,50 @@ public class DataBase {
     	}
     	return payments;
     }
+    
+    //TODO
+    public double totalEarnings(){
+        double earnings = 0;
+        Iterator<String> itrName = this.Table1.getKeyIterator();
+        while(itrName.hasNext()){
+            earnings += this.getTotalExpenses(itrName.next());
+        }
+        return earnings;
+    }
+    
+    //TODO
+    public String totalExpenses(String name){
+        StringBuilder sb = new StringBuilder();
+        Iterator<InvoiceNode> itrInvoice;
+        Iterator<String> items;
+        Iterator<Double> expenses;
+        InvoiceNode invoiceN;
+        sb.append(name + ": " + this.Table1.getValue(name) + "\n");
+        itrInvoice = this.Table2.getValue(name).getItr();
+        while(itrInvoice.hasNext()){
+            invoiceN = itrInvoice.next();
+            items = this.Table3.getItemsItr(invoiceN.invoice);
+            expenses = this.Table3.getExpensesItr(invoiceN.invoice);
+            while(items.hasNext() && expenses.hasNext()){
+                sb.append("\t" + items.next() + " : $" + expenses.next() + "\n");
+            }
+        }
+        return sb.toString();
+    }
+
+    //TODO
+    public String totalPayments(String name){
+        StringBuilder sb = new StringBuilder();
+        Iterator<InvoiceNode> itrInvoice;
+        InvoiceNode invoiceN;
+        sb.append(name + ": " + this.Table1.getValue(name) + "\n");
+        itrInvoice = this.Table2.getValue(name).getItr();
+        while(itrInvoice.hasNext()){
+            invoiceN = itrInvoice.next();
+            sb.append("\t" + invoiceN.invoice + " : $" + invoiceN.expenses + "\n");
+        }
+        return sb.toString();
+}
 
     /**
      * Looks for all the connected users with the given user.
