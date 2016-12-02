@@ -1,11 +1,15 @@
 package DBase;
 
 import java.util.Scanner;
-
+/**
+ * 
+ * @author JOSECARLOS
+ *
+ */
 public class UserInterface{
     private DataBase db;
     private long nextInvoice;
-
+    
     public UserInterface(){
         this.db = new DataBase();
         this.nextInvoice = 0l;
@@ -133,5 +137,6 @@ public class UserInterface{
                 System.out.println("Option not recognized.\n");
             }
         }
+        sc.close();
     }
 }

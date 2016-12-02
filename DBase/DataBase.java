@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 /**
  * DataBase is a class that has three HashTables and one Graph as parameters.
- * Its purpose is to store users, invoices for each user and expenses for each income.
+ * Its purpose is to store users, invoices for each user and expenses for each invoice.
  * It has control of insertion and deletion of each table and can search for elements on each level by the primary ID.
  * @author JOSECARLOS
  *
